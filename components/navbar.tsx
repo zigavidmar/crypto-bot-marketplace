@@ -46,7 +46,7 @@ export async function Navbar() {
               Sign In
             </Link>
             <Link href="/welcome" className={buttonVariants()}>
-              Sign Up - It's Free
+              Sign Up - It&apos;s Free
             </Link>
           </Fragment>
         )}

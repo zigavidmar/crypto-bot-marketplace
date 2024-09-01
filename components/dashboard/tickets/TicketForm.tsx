@@ -1,6 +1,6 @@
 "use client";
 import { Button } from '@/components/ui/button';
-import { Form, FormField, FormInput, FormItem, FormMessage, FormTextarea } from '@/components/ui/form';
+import { Form, FormField, FormInput, FormItem, FormMessage, FormTextarea } from '@/components/ui/Form';
 import { Label } from '@/components/ui/label';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
@@ -104,7 +104,7 @@ export default function TicketForm({ tenantId }: TicketFormProps) {
 
                     <div className="flex flex-col gap-2">
                         <Label>ATTACHMENTS</Label>
-                        <Label className="font-normal">Upload up to 5 screenshots that might be relevant to the issue that you're facing</Label>
+                        <Label className="font-normal">Upload up to 5 screenshots that might be relevant to the issue that you&apos;re facing</Label>
                         <div className="flex items-center flex-wrap gap-2 pt-2">
                             {files.map((file, index) => (
                                 <FilePreview key={index} file={file} setFiles={setFiles} />

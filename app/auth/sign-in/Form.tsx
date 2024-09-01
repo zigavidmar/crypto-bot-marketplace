@@ -6,7 +6,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from 'react-hook-form';
 import { SignInWithEmailSchema } from '@/utils/schemas/auth';
-import { Form, FormField, FormInput, FormItem, FormMessage } from '@/components/ui/form';
+import { Form, FormField, FormInput, FormItem, FormMessage } from '@/components/ui/Form';
 import { Github } from 'lucide-react';
 import Link from 'next/link';
 
@@ -70,7 +70,7 @@ export default function SignInForm() {
 
                     <div className="flex items-center justify-between gap-5">
                         <Link href="/auth/sign-up" className="text-sm text-secondary transition-colors hover:text-primary">
-                            Sign up - It's Free
+                            Sign up - It&apos;s Free
                         </Link>
                         <Link href="/auth/forgot-password" className="text-sm text-secondary transition-colors hover:text-primary">
                             Forgot password?

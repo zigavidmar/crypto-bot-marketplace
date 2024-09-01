@@ -34,7 +34,7 @@ function SidemenuLink({ children, href, label }: SidemenuLinkProps) {
             href={href}
             passHref
             className={cn(
-                "py-2 px-2 group flex items-center gap-3 rounded-2xl transition-colors rounded-md hover:bg-[#e9eaec]",
+                "py-2 px-2 group flex items-center gap-3 transition-colors rounded-md hover:bg-[#e9eaec]",
                 isLinkActive ? "bg-[#e9eaec] text-primary" : "text-secondary"
             )}>
             {children}
