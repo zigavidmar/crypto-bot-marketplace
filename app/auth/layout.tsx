@@ -1,5 +1,5 @@
-import OnboardingFooter from "@/components/onboarding/Footer"
-import OnboardingHeader from "@/components/onboarding/Header"
+import OnboardingFooter from "@/components/onboarding/footer"
+import OnboardingHeader from "@/components/onboarding/header"
 
 interface OnboardingLayoutProps {
     children: React.ReactNode

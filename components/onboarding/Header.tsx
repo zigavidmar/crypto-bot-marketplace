@@ -1,5 +1,5 @@
 import Link from "next/link"
-import Logo from "../icons/Logo"
+import Logo from "../icons/logo"
 
 export default function OnboardingHeader() {
   return (

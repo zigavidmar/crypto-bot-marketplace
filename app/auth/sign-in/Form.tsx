@@ -6,7 +6,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from 'react-hook-form';
 import { SignInWithEmailSchema } from '@/utils/schemas/auth';
-import { Form, FormField, FormInput, FormItem, FormMessage } from '@/components/ui/Form';
+import { Form, FormField, FormInput, FormItem, FormMessage } from '@/components/ui/form';
 import { Github } from 'lucide-react';
 import Link from 'next/link';
 

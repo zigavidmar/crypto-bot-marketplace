@@ -11,8 +11,8 @@ import {
 } from "react-hook-form"
 import { cn } from "lib/utils"
 import { Input } from "./input"
-import { Check, X } from "lucide-react"
-import { Textarea } from "./Textarea"
+import { X } from "lucide-react"
+import { Textarea } from "./textarea"
 
 const Form = FormProvider
 

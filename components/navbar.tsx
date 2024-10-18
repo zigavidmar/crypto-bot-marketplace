@@ -1,13 +1,12 @@
 import { Fragment } from "react"
 import Link from "next/link"
-import { NavItem } from "@/types/nav"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "./ui/button"
-import Logo from "./icons/Logo"
+import Logo from "./icons/logo"
 import SignOut from "./sign-out"
 import isUserLoggedIn from "@/utils/supabase/is-logged-in"
 
-const items: NavItem[] = [
+const items = [
   { title: "Features", href: "/features" },
   { title: "Pricing", href: "/pricing" },
   { title: "Blog", href: "/blog" },
