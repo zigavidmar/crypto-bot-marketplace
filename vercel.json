@@ -2,10 +2,22 @@
     "crons": [
         {
             "path": "/api/cron?type=multiframe-madness",
-            "schedule": "*/5 * * * *"
+            "schedule": "*/15 * * * *"
         },
         {
             "path": "/api/cron?type=weekly-is-the-best",
+            "schedule": "*/15 * * * *"
+        },
+        {
+            "path": "/api/cron?type=multi-timeframe-momentum",
+            "schedule": "*/15 * * * *"
+        },
+        {
+            "path": "/api/cron?type=stochastic-support-resistance",
+            "schedule": "*/15 * * * *"
+        },
+        {
+            "path": "/api/cron?type=volume-breakout",
             "schedule": "*/15 * * * *"
         }
     ]
