@@ -1,6 +1,7 @@
 import OnboardingFooter from "@/components/onboarding/footer"
 import OnboardingHeader from "@/components/onboarding/header"
 
+
 interface OnboardingLayoutProps {
     children: React.ReactNode
 }
