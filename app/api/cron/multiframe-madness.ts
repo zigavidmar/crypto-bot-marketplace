@@ -27,6 +27,9 @@ export async function cronMultiFrameMadness() {
         const candles1h = await getCoinKlines(symbol, HIGHER_INTERVAL);
         const candles15m = await getCoinKlines(symbol, LOWER_INTERVAL);
 
+        if (!Array.isArray(candles1h) || !Array.isArray(candles15m)) {
+            continue;
+        }
         const closePrices1h = candles1h.map(c => Number(c[4]));
         const closePrices15m = candles15m.map(c => Number(c[4]));
         const highPrices15m = candles15m.map(c => Number(c[2]));
