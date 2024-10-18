@@ -65,7 +65,7 @@ export type Database = {
           id: string
           last_name: string | null
           role: Database["public"]["Enums"]["user_role"]
-          tenant_id: string | null
+          tenant: string | null
         }
         Insert: {
           avatar?: string | null
@@ -75,7 +75,7 @@ export type Database = {
           id?: string
           last_name?: string | null
           role?: Database["public"]["Enums"]["user_role"]
-          tenant_id?: string | null
+          tenant?: string | null
         }
         Update: {
           avatar?: string | null
@@ -85,12 +85,12 @@ export type Database = {
           id?: string
           last_name?: string | null
           role?: Database["public"]["Enums"]["user_role"]
-          tenant_id?: string | null
+          tenant?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "users_tenant_id_fkey"
-            columns: ["tenant_id"]
+            foreignKeyName: "users_tenant_fkey"
+            columns: ["tenant"]
             isOneToOne: false
             referencedRelation: "tenants"
             referencedColumns: ["id"]

@@ -6,17 +6,19 @@ import Link from "next/link";
 export default function Error({ reset }: { reset: () => void }) {
   return (
     <main>
-      <div className="min-h-[calc(100vh-94px-77px)] flex items-center flex-col justify-center text-center">
-        <Image
-          src="/images/404.png"
-          alt="Stran ni bila najdena"
-          width={453}
-          height={453}
-        />
-        <h1>Ups, prišlo je do napake</h1>
-        <p className="text-md font-medium pt-3 pb-3">Nekaj ​​je šlo narobe. Težavo bomo kmalu preučili. <br /> Opravičujemo se za nevšečnosti!</p>
-       {/*  onClick={() => reset()} */}
-        <Link href="/" className="btn btn-dark btn-lg">Nazaj na domačo stran</Link>
+      <div className="flex flex-col items-center justify-center h-screen">
+        <Image src="/error.svg" width={200} height={200} alt="Error" />
+        <h1 className="text-3xl font-bold mt-4">An error occurred</h1>
+        <p className="text-gray-600 mt-2">Please try again later</p>
+        <button
+          onClick={reset}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
+        >
+          Try again
+        </button>
+        <Link href="/">
+          <a className="text-blue-500 hover:underline mt-2">Go back home</a>
+        </Link>
       </div>
     </main>
   );

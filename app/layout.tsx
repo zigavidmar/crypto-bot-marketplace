@@ -1,7 +1,6 @@
 import "@/styles/globals.css"
 import { Metadata } from "next"
 import { siteConfig } from "@/config/site"
-import { fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/theme-provider"
 import { GeistSans } from 'geist/font/sans';
@@ -38,16 +37,14 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         <body
           className={cn(
             "min-h-screen bg-background antialiased",
-            fontSans.variable
+            dm_sans.className
           )}
         >
-          <ThemeProvider attribute="class" 
+          <ThemeProvider attribute="class"
             defaultTheme="root"
             enableSystem
           >
-            <div className="relative flex min-h-screen flex-col">
-              <div className="flex-1">{children}</div>
-            </div>
+            {children}
           </ThemeProvider>
         </body>
       </html>

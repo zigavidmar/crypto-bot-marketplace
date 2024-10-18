@@ -9,158 +9,122 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      messages: {
+      trades: {
         Row: {
-          content: string
+          bot: number
           created_at: string
+          entry_price: number
           id: number
-          sender_id: string
-          ticket_id: number
+          status: string
+          stop_loss: number
+          symbol: string
+          target_price: number
         }
         Insert: {
-          content: string
+          bot: number
           created_at?: string
+          entry_price: number
           id?: number
-          sender_id: string
-          ticket_id: number
+          status?: string
+          stop_loss: number
+          symbol: string
+          target_price: number
         }
         Update: {
-          content?: string
+          bot?: number
           created_at?: string
+          entry_price?: number
           id?: number
-          sender_id?: string
-          ticket_id?: number
+          status?: string
+          stop_loss?: number
+          symbol?: string
+          target_price?: number
         }
         Relationships: [
           {
-            foreignKeyName: "messages_sender_id_fkey"
-            columns: ["sender_id"]
+            foreignKeyName: "trades_bot_fkey"
+            columns: ["bot"]
             isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "messages_ticket_id_fkey"
-            columns: ["ticket_id"]
-            isOneToOne: false
-            referencedRelation: "tickets"
+            referencedRelation: "trading_bots"
             referencedColumns: ["id"]
           },
         ]
       }
-      tenants: {
+      trading_bots: {
         Row: {
-          api_key: string
           created_at: string
-          id: string
+          id: number
+          identifier: string
           name: string
         }
         Insert: {
-          api_key?: string
           created_at?: string
-          id?: string
+          id?: number
+          identifier: string
           name: string
         }
         Update: {
-          api_key?: string
           created_at?: string
-          id?: string
+          id?: number
+          identifier?: string
           name?: string
         }
         Relationships: []
-      }
-      tickets: {
-        Row: {
-          created_at: string
-          id: number
-          subject: string
-          tenant_id: string | null
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          subject: string
-          tenant_id?: string | null
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          subject?: string
-          tenant_id?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tickets_tenant_id_fkey"
-            columns: ["tenant_id"]
-            isOneToOne: false
-            referencedRelation: "tenants"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tickets_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       users: {
         Row: {
           avatar: string | null
           created_at: string
+          education: Json[] | null
           email: string
           first_name: string | null
           id: string
           last_name: string | null
-          role: Database["public"]["Enums"]["user_role"]
-          tenant_id: string | null
+          occupation: string | null
+          socials: Json[] | null
+          summary: string | null
+          theme: Database["public"]["Enums"]["themes"]
+          work_experience: Json[] | null
         }
         Insert: {
           avatar?: string | null
           created_at?: string
+          education?: Json[] | null
           email: string
           first_name?: string | null
           id?: string
           last_name?: string | null
-          role?: Database["public"]["Enums"]["user_role"]
-          tenant_id?: string | null
+          occupation?: string | null
+          socials?: Json[] | null
+          summary?: string | null
+          theme?: Database["public"]["Enums"]["themes"]
+          work_experience?: Json[] | null
         }
         Update: {
           avatar?: string | null
           created_at?: string
+          education?: Json[] | null
           email?: string
           first_name?: string | null
           id?: string
           last_name?: string | null
-          role?: Database["public"]["Enums"]["user_role"]
-          tenant_id?: string | null
+          occupation?: string | null
+          socials?: Json[] | null
+          summary?: string | null
+          theme?: Database["public"]["Enums"]["themes"]
+          work_experience?: Json[] | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "users_tenant_id_fkey"
-            columns: ["tenant_id"]
-            isOneToOne: false
-            referencedRelation: "tenants"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      gen_api_token: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      [_ in never]: never
     }
     Enums: {
-      user_role: "Admin" | "Editor" | "Viewer" | "Guest"
+      themes: "minimalistic"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -248,4 +212,19 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
