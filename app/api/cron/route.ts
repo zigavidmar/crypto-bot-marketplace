@@ -5,6 +5,8 @@ import { cronMultiTimeframeMomentum } from "./multi-timeframe-momentum"
 import { cronStochasticSupportResistance } from "./stochastic-support-resistance"
 import { cronVolumeBreakout } from "./volume-breakout"
 
+export const revalidate = 2; 
+
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const type = searchParams.get('type')
