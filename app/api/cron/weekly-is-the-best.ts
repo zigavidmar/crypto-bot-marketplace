@@ -1,3 +1,4 @@
+import { getStopLossPrice, getTargetPrice } from "@/lib/calculations";
 import getAllUSDTTradingPairs from "@/lib/get-all-usdt-trading-pairs";
 import getCoinKlines from "@/lib/get-coin-klines";
 import placeOrder from "@/lib/place-order";
@@ -16,8 +17,6 @@ const MACD_SIGNAL_PERIOD = 9;
 const RSI_PERIOD = 14;
 const ADX_PERIOD = 14;
 const ATR_PERIOD = 14;
-const STOP_LOSS_MULTIPLIER = 1.5; // ATR multiplier for stop-loss
-const TAKE_PROFIT_MULTIPLIER = 3; // ATR multiplier for take-profit
 
 export async function cronWeeklyIsTheBest() {
     const tradingPairs = await getAllUSDTTradingPairs();
@@ -100,7 +99,8 @@ export async function cronWeeklyIsTheBest() {
         }
 
         // Entry conditions using the trend score range
-        if (trendScore >= 30 && trendScore <= 60) {
+        const buyCondition = trendScore >= 30 && trendScore <= 60;
+        if (buyCondition) {
             const tradeActive = await isTradeActive(symbol, STRATEGY);
             if (tradeActive) {
                 console.log(`Trade already active for ${symbol}`);
@@ -109,24 +109,15 @@ export async function cronWeeklyIsTheBest() {
 
             // Buy condition met
             const entryPrice = lastClose;
-            const targetPrice = entryPrice + (TAKE_PROFIT_MULTIPLIER * lastATR);
-            const stopLossPrice = entryPrice - (STOP_LOSS_MULTIPLIER * lastATR);
+            const targetPrice = getTargetPrice(entryPrice);
+            const stopLossPrice = getStopLossPrice(entryPrice);
             await placeOrder(SYMBOL, entryPrice, targetPrice, stopLossPrice, STRATEGY);
         }
 
         const result = {
             symbol,
-            interval: INTERVAL,
-            sma50: lastSMA50,
-            sma200: lastSMA200,
-            macd: lastMACD,
-            rsi: lastRSI,
-            adx: lastADX,
-            close: lastClose,
-            atr: lastATR,
             trendScore,
-            shouldBuy: trendScore >= 30 && trendScore <= 60,
-            shouldSell: trendScore <= -30 && trendScore >= -60
+            buyCondition
         };
 
         results.push(result);

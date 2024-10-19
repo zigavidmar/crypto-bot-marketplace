@@ -5,7 +5,7 @@ async function isTradeActive(symbol: string, strategy: string) {
         .from("trades")
         .select("symbol")
         .eq("symbol", symbol)
-        .eq("bot", strategy)
+        .eq("trading_bot", strategy)
         .eq("status", "active");
 
     if (error) {

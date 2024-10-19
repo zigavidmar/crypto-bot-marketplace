@@ -1,6 +1,6 @@
 import { supabaseClient } from "@/utils/supabase/client";
 
-async function placeOrder(symbol: string, entryPrice: number, targetPrice: number, stopLossPrice: number, bot: string) {
+async function placeOrder(symbol: string, entryPrice: number, targetPrice: number, stopLossPrice: number, tradingBot: string) {
     const { error } = await supabaseClient
         .from("trades")
         .insert([
@@ -9,7 +9,7 @@ async function placeOrder(symbol: string, entryPrice: number, targetPrice: numbe
                 entry_price: entryPrice,
                 target_price: targetPrice,
                 stop_loss: stopLossPrice,
-                bot,
+                trading_bot : tradingBot,
                 status: "active"
             },
         ]);

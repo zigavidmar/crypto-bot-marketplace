@@ -1,3 +1,4 @@
+import { getStopLossPrice, getTargetPrice } from "@/lib/calculations";
 import getAllUSDTTradingPairs from "@/lib/get-all-usdt-trading-pairs";
 import getCoinKlines from "@/lib/get-coin-klines";
 import placeOrder from "@/lib/place-order";
@@ -17,8 +18,6 @@ const ATR_PERIOD = 14;
 const MACD_FAST_PERIOD = 12;
 const MACD_SLOW_PERIOD = 26;
 const MACD_SIGNAL_PERIOD = 9;
-const TARGET_PROFIT_MULTIPLIER = 2; // ATR multiplier for take-profit
-const STOP_LOSS_MULTIPLIER = 1; // ATR multiplier for stop-loss
 
 export async function cronMultiFrameMadness() {
     const tradingPairs = await getAllUSDTTradingPairs();
@@ -70,16 +69,9 @@ export async function cronMultiFrameMadness() {
         const macdMakingHigherLows = macd15m[macd15m.length - 2].histogram < macd15m[macd15m.length - 1].histogram;
         const bullishDivergence = priceMakingLowerLows && macdMakingHigherLows;
 
-        console.log(`RSI 1h: ${lastRSI1h}, RSI 15m: ${lastRSI15m}, Volume 15m: ${lastVolume15m}`);
-
         // Entry condition: 1-hour RSI above 50, 15-minute RSI below 30, price below lower BB, volume increasing, and bullish divergence
-        if (
-            lastRSI1h > 50 &&
-            lastRSI15m < 30 &&
-            lastClose15m < lastBBandLower15m &&
-            bullishDivergence &&
-            lastVolume15m > volume15m[volume15m.length - 2]
-        ) {
+        const buyCondition = lastRSI1h > 50 && lastRSI15m < 30 && lastClose15m < lastBBandLower15m && bullishDivergence && lastVolume15m > volume15m[volume15m.length - 2];
+        if (buyCondition) {
             const tradeActive = await isTradeActive(symbol, STRATEGY);
             if (tradeActive) {
                 console.log(`Trade already active for ${symbol}`);
@@ -88,19 +80,14 @@ export async function cronMultiFrameMadness() {
 
             // Buy condition met
             const entryPrice = lastClose15m;
-            const targetPrice = entryPrice + (TARGET_PROFIT_MULTIPLIER * lastATR15m);
-            const stopLossPrice = entryPrice - (STOP_LOSS_MULTIPLIER * lastATR15m);
+            const targetPrice = getTargetPrice(entryPrice);
+            const stopLossPrice = getStopLossPrice(entryPrice);
             await placeOrder(SYMBOL, entryPrice, targetPrice, stopLossPrice, STRATEGY);
         }
 
         const result = {
             symbol,
-            rsi1h: lastRSI1h,
-            rsi15m: lastRSI15m,
-            close15m: lastClose15m,
-            atr15m: lastATR15m,
-            volume15m: lastVolume15m,
-            smaTrend1h
+            buyCondition
         };
 
         results.push(result);

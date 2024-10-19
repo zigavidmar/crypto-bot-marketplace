@@ -1,3 +1,4 @@
+import { getStopLossPrice, getTargetPrice } from '@/lib/calculations';
 import getAllUSDTTradingPairs from '@/lib/get-all-usdt-trading-pairs';
 import getCoinKlines from '@/lib/get-coin-klines';
 import placeOrder from '@/lib/place-order';
@@ -12,8 +13,8 @@ const MTF_ATR_PERIOD = 14;
 const MTF_MACD_FAST_PERIOD = 12;
 const MTF_MACD_SLOW_PERIOD = 26;
 const MTF_MACD_SIGNAL_PERIOD = 9;
-const MTF_TARGET_PROFIT_MULTIPLIER = 2;
-const MTF_STOP_LOSS_MULTIPLIER = 1;
+const DEFAULT_TARGET_PROFIT_PERCENT = 2; // 2% target profit
+const DEFAULT_STOP_LOSS_PERCENT = 1; // 1% stop loss
 
 export async function cronMultiTimeframeMomentum() {
     const tradingPairs = await getAllUSDTTradingPairs();
@@ -49,25 +50,24 @@ export async function cronMultiTimeframeMomentum() {
         const lastATR15m = atr15m[atr15m.length - 1];
 
         // Entry condition: 1-hour RSI above 50 and 15-minute MACD histogram positive
-        if (lastRSI1h > 50 && lastMACD.histogram > 0) {
+        const buyCondition = lastRSI1h > 50 && lastMACD.histogram > 0;
+        if (buyCondition) {
             const tradeActive = await isTradeActive(symbol, STRATEGY_MTF);
             if (tradeActive) {
                 continue;
             }
 
             const entryPrice = lastClose15m;
-            const targetPrice = entryPrice + (MTF_TARGET_PROFIT_MULTIPLIER * lastATR15m);
-            const stopLossPrice = entryPrice - (MTF_STOP_LOSS_MULTIPLIER * lastATR15m);
+            const targetPrice = getTargetPrice(entryPrice);
+            const stopLossPrice = getStopLossPrice(entryPrice);
 
             await placeOrder(symbol, entryPrice, targetPrice, stopLossPrice, STRATEGY_MTF);
         }
 
         const result = {
             symbol,
-            rsi1h: lastRSI1h,
-            macd15m: lastMACD,
-            close15m: lastClose15m,
-            atr15m: lastATR15m
+            lastMACD: lastMACD.histogram,
+            buyCondition
         };
         results.push(result);
     }

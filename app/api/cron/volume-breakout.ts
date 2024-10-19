@@ -1,3 +1,4 @@
+import { getStopLossPrice, getTargetPrice } from '@/lib/calculations';
 import getAllUSDTTradingPairs from '@/lib/get-all-usdt-trading-pairs';
 import getCoinKlines from '@/lib/get-coin-klines';
 import placeOrder from '@/lib/place-order';
@@ -8,8 +9,6 @@ const STRATEGY_VOLUME_BREAKOUT = 'volume-breakout';
 const VB_INTERVAL = '15m';
 const VB_BB_PERIOD = 20;
 const VB_ATR_PERIOD = 14;
-const VB_TARGET_PROFIT_MULTIPLIER = 2;
-const VB_STOP_LOSS_MULTIPLIER = 1;
 
 export async function cronVolumeBreakout() {
     const tradingPairs = await getAllUSDTTradingPairs();
@@ -37,25 +36,23 @@ export async function cronVolumeBreakout() {
         const lastATR = atr[atr.length - 1];
 
         // Volume breakout above the upper band
-        if (lastClose > lastBBandUpper && lastVolume > volume[volume.length - 2]) {
+        const buyCondition = lastClose > lastBBandUpper && lastVolume > volume[volume.length - 2];
+        if (buyCondition) {
             const tradeActive = await isTradeActive(symbol, STRATEGY_VOLUME_BREAKOUT);
             if (tradeActive) {
                 continue;
             }
 
             const entryPrice = lastClose;
-            const targetPrice = entryPrice + (VB_TARGET_PROFIT_MULTIPLIER * lastATR);
-            const stopLossPrice = entryPrice - (VB_STOP_LOSS_MULTIPLIER * lastATR);
+            const targetPrice = getTargetPrice(entryPrice);
+            const stopLossPrice = getStopLossPrice(entryPrice);
 
             await placeOrder(symbol, entryPrice, targetPrice, stopLossPrice, STRATEGY_VOLUME_BREAKOUT);
         }
 
         const result = {
             symbol,
-            lastClose,
-            lastVolume,
-            bbands: { upper: lastBBandUpper, lower: lastBBandLower },
-            atr: lastATR
+            buyCondition
         };
         results.push(result);
     }

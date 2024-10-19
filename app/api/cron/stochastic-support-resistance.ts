@@ -1,3 +1,4 @@
+import { getStopLossPrice, getTargetPrice } from '@/lib/calculations';
 import getAllUSDTTradingPairs from '@/lib/get-all-usdt-trading-pairs';
 import getCoinKlines from '@/lib/get-coin-klines';
 import placeOrder from '@/lib/place-order';
@@ -9,8 +10,6 @@ const STOCH_INTERVAL = '15m';
 const STOCH_PERIOD = 14;
 const STOCH_SIGNAL_PERIOD = 3;
 const ATR_PERIOD = 14;
-const STOCH_TARGET_PROFIT_MULTIPLIER = 2;
-const STOCH_STOP_LOSS_MULTIPLIER = 1;
 
 export async function cronStochasticSupportResistance() {
     const tradingPairs = await getAllUSDTTradingPairs();
@@ -42,25 +41,23 @@ export async function cronStochasticSupportResistance() {
         const lastATR = atr[atr.length - 1];
 
         // Entry condition: Stochastic %K below 20 and %K crosses above %D (potential buy signal)
-        if (lastStochK < 20 && lastStochK > lastStochD) {
+        const buyCondition = lastStochK < 20 && lastStochK > lastStochD;
+        if (buyCondition) {
             const tradeActive = await isTradeActive(symbol, STRATEGY_STOCHASTIC_SR);
             if (tradeActive) {
                 continue;
             }
 
             const entryPrice = lastClose;
-            const targetPrice = entryPrice + (STOCH_TARGET_PROFIT_MULTIPLIER * lastATR);
-            const stopLossPrice = entryPrice - (STOCH_STOP_LOSS_MULTIPLIER * lastATR);
+            const targetPrice = getTargetPrice(entryPrice);
+            const stopLossPrice = getStopLossPrice(entryPrice);
 
             await placeOrder(symbol, entryPrice, targetPrice, stopLossPrice, STRATEGY_STOCHASTIC_SR);
         }
 
         const result = {
             symbol,
-            stochK: lastStochK,
-            stochD: lastStochD,
-            close: lastClose,
-            atr: lastATR
+            buyCondition
         };
         results.push(result);
     }

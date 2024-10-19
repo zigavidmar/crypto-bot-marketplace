@@ -1,6 +1,10 @@
 {
     "crons": [
         {
+            "path": "api/trades-check",
+            "schedule": "*/1 * * * *"
+        },
+        {
             "path": "/api/cron?type=multiframe-madness",
             "schedule": "*/15 * * * *"
         },
