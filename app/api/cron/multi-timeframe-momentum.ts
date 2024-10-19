@@ -21,8 +21,25 @@ export async function cronMultiTimeframeMomentum() {
     let results = [];
 
     for (const symbol of tradingPairs) {
-        const candles1h = await getCoinKlines(symbol, MTF_HIGHER_INTERVAL);
-        const candles15m = await getCoinKlines(symbol, MTF_LOWER_INTERVAL);
+        const { 
+            data: candles1h, 
+            error: errorCandles1h 
+        } = await getCoinKlines(symbol, MTF_HIGHER_INTERVAL);
+
+        if (errorCandles1h) {
+            console.error(`Error fetching 1-hour candles for ${symbol}:`, errorCandles1h);
+            continue;
+        }
+
+        const { 
+            data: candles15m, 
+            error: errorCandles15m 
+        } = await getCoinKlines(symbol, MTF_LOWER_INTERVAL);
+        
+        if (errorCandles15m) {
+            console.error(`Error fetching 15-minute candles for ${symbol}:`, errorCandles15m);
+            continue;
+        }
 
         if (!Array.isArray(candles1h) || !Array.isArray(candles15m)) {
             continue;

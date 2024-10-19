@@ -15,9 +15,13 @@ export async function cronVolumeBreakout() {
     let results = [];
 
     for (const symbol of tradingPairs) {
-        const candles15m = await getCoinKlines(symbol, VB_INTERVAL);
+        const { 
+            data: candles15m,
+            error: errorCandles15m
+        } = await getCoinKlines(symbol, VB_INTERVAL);
 
-        if (!Array.isArray(candles15m)) {
+        if (errorCandles15m || !candles15m) {
+            console.error(`Error fetching 15-minute candles for ${symbol}:`, errorCandles15m);
             continue;
         }
 

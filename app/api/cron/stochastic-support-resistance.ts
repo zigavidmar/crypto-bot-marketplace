@@ -16,9 +16,13 @@ export async function cronStochasticSupportResistance() {
     let results = [];
 
     for (const symbol of tradingPairs) {
-        const candles15m = await getCoinKlines(symbol, STOCH_INTERVAL);
+        const { 
+            data: candles15m, 
+            error: candles15mError 
+        } = await getCoinKlines(symbol, STOCH_INTERVAL);
 
-        if (!Array.isArray(candles15m)) {
+        if (candles15mError || !candles15m) {
+            console.error(`Error fetching 15-minute candles for ${symbol}:`, candles15mError);
             continue;
         }
 

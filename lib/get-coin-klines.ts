@@ -1,3 +1,5 @@
+import axios from "axios";
+
 /* 
     Api documentation:
     https://developers.binance.com/docs/binance-spot-api-docs/rest-api#klinecandlestick-data
@@ -21,25 +23,40 @@ type Kline = [
     string   // Unused field, ignore
 ];
 
-async function getCoinKlines(coin: string, interval: Interval, limit: number = 1000): Promise<Kline[]> {
+interface ResponseObject<T> {
+    data?: T;
+    error?: string;
+}
+
+async function getCoinKlines(coin: string, interval: Interval, limit: number = 1000): Promise<ResponseObject<Kline[]>> {
+    // Validate required parameters
     if (!coin) {
-        throw new Error('Coin is required');
+        return { error: 'Coin is required' };
     }
 
     if (!interval) {
-        throw new Error('Interval is required');
+        return { error: 'Interval is required' };
     }
 
-    const url = new URL(BASE_URL);
-    url.searchParams.append('symbol', coin);
-    url.searchParams.append('interval', interval);
-    if (limit) {
-        url.searchParams.append('limit', limit.toString());
-    }
+    try {
+        const url = new URL(BASE_URL);
+        url.searchParams.append('symbol', coin);
+        url.searchParams.append('interval', interval);
 
-    const response = await fetch(url);
-    const data = await response.json();
-    return data;
+        if (limit) {
+            url.searchParams.append('limit', limit.toString());
+        }
+
+        // Use axios to fetch data
+        const { data } = await axios.get(url.toString());
+        return { data };
+    } catch (error) {
+        // Handle Axios errors and unexpected errors
+        if (axios.isAxiosError(error) && error.response) {
+            return { error: `Error fetching data: ${error.response.status} ${error.response.statusText}` };
+        }
+        return { error: `An unexpected error occurred: ${(error as Error).message}` };
+    }
 }
 
 export default getCoinKlines;

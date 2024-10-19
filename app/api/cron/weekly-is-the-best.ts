@@ -23,15 +23,20 @@ export async function cronWeeklyIsTheBest() {
 
     let results = [];
     for (const symbol of tradingPairs) {
-        const candles = await getCoinKlines(symbol, INTERVAL);
+        const {
+            data: candles,
+            error: errorCandles
+        } = await getCoinKlines(symbol, INTERVAL);
+
+        if (errorCandles || !candles) {
+            console.error(`Error fetching weekly candles for ${symbol}:`, errorCandles);
+            continue;
+        }
 
         if (candles.length < 28) {
             continue; // Skip pairs with less than 6 months of data
         }
 
-        if (!Array.isArray(candles)) {
-            continue;
-        }
         const closePrices = candles.map(c => Number(c[4]));
         const highPrices = candles.map(c => Number(c[2]));
         const lowPrices = candles.map(c => Number(c[3]));

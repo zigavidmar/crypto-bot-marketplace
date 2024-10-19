@@ -23,12 +23,26 @@ export async function cronMultiFrameMadness() {
     const tradingPairs = await getAllUSDTTradingPairs();
     let results = [];
     for (const symbol of tradingPairs) {
-        const candles1h = await getCoinKlines(symbol, HIGHER_INTERVAL);
-        const candles15m = await getCoinKlines(symbol, LOWER_INTERVAL);
+        const { 
+            data: candles1h, 
+            error: errorCandles1h 
+        } = await getCoinKlines(symbol, HIGHER_INTERVAL);
 
-        if (!Array.isArray(candles1h) || !Array.isArray(candles15m)) {
+        if (errorCandles1h || !candles1h) {
+            console.error(`Error fetching 1-hour candles for ${symbol}:`, errorCandles1h);
             continue;
         }
+
+        const { 
+            data: candles15m, 
+            error: errorCandles15m 
+        } = await getCoinKlines(symbol, LOWER_INTERVAL);
+
+        if (errorCandles15m || !candles15m) {
+            console.error(`Error fetching 15-minute candles for ${symbol}:`, errorCandles15m);
+            continue;
+        }
+
         const closePrices1h = candles1h.map(c => Number(c[4]));
         const closePrices15m = candles15m.map(c => Number(c[4]));
         const highPrices15m = candles15m.map(c => Number(c[2]));

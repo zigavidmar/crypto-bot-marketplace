@@ -26,12 +26,11 @@ export async function GET(request: Request) {
         const { id, symbol, target_price, stop_loss } = trade;
 
         // Fetch the latest price for the symbol
-        const candles = await getCoinKlines(symbol, '1m', 5);
+        const { data: candles, error } = await getCoinKlines(symbol, '1m', 5);
 
-        // Check if the candles data is valid before accessing its content
-        if (!Array.isArray(candles) || candles.length === 0 || !Array.isArray(candles[0])) {
-            console.error(`Invalid candle data for ${symbol}:`, candles);
-            continue; // Skip this trade if the data is invalid
+        if (error || !candles) {
+            console.error(`Error fetching candles for ${symbol}:`, error);
+            continue; // Skip this trade if there was an error fetching the candles
         }
 
         const latestPrices = candles.map((candle) => parseFloat(candle[4]));
