@@ -23,7 +23,7 @@ export async function GET(request: Request) {
         const { id, symbol, target_price, stop_loss } = trade;
 
         // Fetch the latest price for the symbol
-        const candles = await getCoinKlines(symbol, '1m', 1);
+        const candles = await getCoinKlines(symbol, '1m', 5);
 
         // Check if the candles data is valid before accessing its content
         if (!Array.isArray(candles) || candles.length === 0 || !Array.isArray(candles[0])) {
@@ -31,10 +31,12 @@ export async function GET(request: Request) {
             continue; // Skip this trade if the data is invalid
         }
 
-        const latestPrice = Number(candles[0][4]);
+        const latestPrices = candles.map((candle) => parseFloat(candle[4]));
 
+        const containsTargetPrice = latestPrices.some((price) => price >= target_price);
+        const containsStopLossPrice = latestPrices.some((price) => price <= stop_loss);
         // Check if the price hits the target or stop loss
-        if (latestPrice >= target_price) {
+        if (containsTargetPrice) {
             // Update trade status to 'hit_target'
             const { error: updateError } = await supabaseClient
                 .from('trades')
@@ -46,7 +48,7 @@ export async function GET(request: Request) {
             } else {
                 console.log(`Trade ${id} for ${symbol} has hit the target price.`);
             }
-        } else if (latestPrice <= stop_loss) {
+        } else if (containsStopLossPrice) {
             // Update trade status to 'hit_stop_loss'
             const { error: updateError } = await supabaseClient
                 .from('trades')
