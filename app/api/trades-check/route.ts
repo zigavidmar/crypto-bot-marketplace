@@ -5,6 +5,7 @@ import { NextResponse } from "next/server"
 export const revalidate = 2; 
 
 export async function GET(request: Request) {
+    let response;
     // Fetch all active trades from the database
     const { data: trades, error } = await supabaseClient
         .from('trades')
@@ -12,11 +13,13 @@ export async function GET(request: Request) {
         .eq('status', 'active');
 
     if (error) {
-        NextResponse.json(error, { status: 500 });
+        response = NextResponse.json(error, { status: 500 });
+        return response;
     }
 
     if (!trades || trades.length === 0) {
-        return NextResponse.json({ message: 'No active trades found' });
+        response = NextResponse.json({ message: 'No active trades found' });
+        return response;
     }
 
     for (const trade of trades) {
@@ -63,7 +66,15 @@ export async function GET(request: Request) {
         } else {
             console.log(`Trade ${id} for ${symbol} is still active.`);
         }
+
+        // Sleep for a short period to avoid rate limiting
+        await new Promise((resolve) => setTimeout(resolve, 500));
     }
 
-    return NextResponse.json({ message: 'Trades checked' });
+    response = NextResponse.json({ message: 'Trades checked' });
+
+    // Set cache-control header to disable caching
+    response.headers.set('Cache-Control', 'no-store');
+
+    return response;
 }

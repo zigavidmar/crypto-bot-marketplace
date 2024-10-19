@@ -11,18 +11,31 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const type = searchParams.get('type')
 
+    let response;
+
     switch (type) {
         case 'multiframe-madness':
-            return NextResponse.json(await cronMultiFrameMadness())
+            response = NextResponse.json(await cronMultiFrameMadness());
+            break;
         case 'weekly-is-the-best':
-            return NextResponse.json(await cronWeeklyIsTheBest())
-            case 'multi-timeframe-momentum':
-            return NextResponse.json(await cronMultiTimeframeMomentum())
-            case 'stochastic-support-resistance':
-            return NextResponse.json(await cronStochasticSupportResistance())
-            case 'volume-breakout':
-            return NextResponse.json(await cronVolumeBreakout())
+            response = NextResponse.json(await cronWeeklyIsTheBest());
+            break;
+        case 'multi-timeframe-momentum':
+            response = NextResponse.json(await cronMultiTimeframeMomentum());
+            break;
+        case 'stochastic-support-resistance':
+            response = NextResponse.json(await cronStochasticSupportResistance());
+            break;
+        case 'volume-breakout':
+            response = NextResponse.json(await cronVolumeBreakout());
+            break;
         default:
-            return NextResponse.json({ error: 'Invalid search type' }, { status: 400 })
+            response = NextResponse.json({ error: 'Invalid search type' }, { status: 400 });
+            break;
     }
+
+    // Set cache-control header to disable caching
+    response.headers.set('Cache-Control', 'no-store');
+
+    return response;
 }
