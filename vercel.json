@@ -1,7 +1,7 @@
 {
     "crons": [
         {
-            "path": "api/trades-check",
+            "path": "/api/trades-check",
             "schedule": "*/1 * * * *"
         },
         {
