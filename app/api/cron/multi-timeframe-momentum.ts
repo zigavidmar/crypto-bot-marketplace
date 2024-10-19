@@ -13,8 +13,6 @@ const MTF_ATR_PERIOD = 14;
 const MTF_MACD_FAST_PERIOD = 12;
 const MTF_MACD_SLOW_PERIOD = 26;
 const MTF_MACD_SIGNAL_PERIOD = 9;
-const DEFAULT_TARGET_PROFIT_PERCENT = 2; // 2% target profit
-const DEFAULT_STOP_LOSS_PERCENT = 1; // 1% stop loss
 
 export async function cronMultiTimeframeMomentum() {
     const tradingPairs = await getAllUSDTTradingPairs();
@@ -35,7 +33,7 @@ export async function cronMultiTimeframeMomentum() {
             data: candles15m, 
             error: errorCandles15m 
         } = await getCoinKlines(symbol, MTF_LOWER_INTERVAL);
-        
+
         if (errorCandles15m) {
             console.error(`Error fetching 15-minute candles for ${symbol}:`, errorCandles15m);
             continue;

@@ -7,7 +7,6 @@ import { RSI, MACD, ADX, ATR, SMA } from 'technicalindicators';
 
 // Define your trading settings
 const STRATEGY = 'weekly-is-the-best';
-const SYMBOL = 'DOGEUSDT';
 const INTERVAL = '1w';
 const SMA_SHORT_PERIOD = 50;
 const SMA_LONG_PERIOD = 200;
@@ -116,7 +115,7 @@ export async function cronWeeklyIsTheBest() {
             const entryPrice = lastClose;
             const targetPrice = getTargetPrice(entryPrice);
             const stopLossPrice = getStopLossPrice(entryPrice);
-            await placeOrder(SYMBOL, entryPrice, targetPrice, stopLossPrice, STRATEGY);
+            await placeOrder(symbol, entryPrice, targetPrice, stopLossPrice, STRATEGY);
         }
 
         const result = {

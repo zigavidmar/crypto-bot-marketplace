@@ -7,7 +7,6 @@ import { RSI, MACD, ATR, SMA, BollingerBands } from 'technicalindicators';
 
 // Define your trading settings
 const STRATEGY = 'multiframe-madness';
-const SYMBOL = 'BTC_USDT';
 const HIGHER_INTERVAL = '1h';
 const LOWER_INTERVAL = '15m';
 const RSI_PERIOD = 14;
@@ -96,7 +95,7 @@ export async function cronMultiFrameMadness() {
             const entryPrice = lastClose15m;
             const targetPrice = getTargetPrice(entryPrice);
             const stopLossPrice = getStopLossPrice(entryPrice);
-            await placeOrder(SYMBOL, entryPrice, targetPrice, stopLossPrice, STRATEGY);
+            await placeOrder(symbol, entryPrice, targetPrice, stopLossPrice, STRATEGY);
         }
 
         const result = {
