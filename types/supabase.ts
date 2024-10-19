@@ -11,7 +11,6 @@ export type Database = {
     Tables: {
       trades: {
         Row: {
-          bot: number
           created_at: string
           entry_price: number
           id: number
@@ -19,9 +18,9 @@ export type Database = {
           stop_loss: number
           symbol: string
           target_price: number
+          trading_bot: string
         }
         Insert: {
-          bot: number
           created_at?: string
           entry_price: number
           id?: number
@@ -29,9 +28,9 @@ export type Database = {
           stop_loss: number
           symbol: string
           target_price: number
+          trading_bot: string
         }
         Update: {
-          bot?: number
           created_at?: string
           entry_price?: number
           id?: number
@@ -39,11 +38,12 @@ export type Database = {
           stop_loss?: number
           symbol?: string
           target_price?: number
+          trading_bot?: string
         }
         Relationships: [
           {
-            foreignKeyName: "trades_bot_fkey"
-            columns: ["bot"]
+            foreignKeyName: "trades_trading_bot_fkey"
+            columns: ["trading_bot"]
             isOneToOne: false
             referencedRelation: "trading_bots"
             referencedColumns: ["id"]
@@ -53,20 +53,17 @@ export type Database = {
       trading_bots: {
         Row: {
           created_at: string
-          id: number
-          identifier: string
+          id: string
           name: string
         }
         Insert: {
           created_at?: string
-          id?: number
-          identifier: string
+          id: string
           name: string
         }
         Update: {
           created_at?: string
-          id?: number
-          identifier?: string
+          id?: string
           name?: string
         }
         Relationships: []

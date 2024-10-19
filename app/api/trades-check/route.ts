@@ -24,6 +24,13 @@ export async function GET(request: Request) {
 
         // Fetch the latest price for the symbol
         const candles = await getCoinKlines(symbol, '1m', 1);
+
+        // Check if the candles data is valid before accessing its content
+        if (!Array.isArray(candles) || candles.length === 0 || !Array.isArray(candles[0])) {
+            console.error(`Invalid candle data for ${symbol}:`, candles);
+            continue; // Skip this trade if the data is invalid
+        }
+
         const latestPrice = Number(candles[0][4]);
 
         // Check if the price hits the target or stop loss
