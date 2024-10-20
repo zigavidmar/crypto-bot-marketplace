@@ -41,7 +41,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           )}
         >
           <ThemeProvider attribute="class"
-            defaultTheme="root"
+            defaultTheme="dark"
             enableSystem
           >
             {children}

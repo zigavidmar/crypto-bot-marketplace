@@ -9,4 +9,9 @@ function getTargetPrice(entryPrice: number, targetProfitPercent: number = DEFAUL
   return entryPrice + (entryPrice * (targetProfitPercent / 100));
 }
 
-export { getStopLossPrice, getTargetPrice };
+export { 
+    getStopLossPrice, 
+    getTargetPrice,
+    DEFAULT_TARGET_PROFIT_PERCENT,
+    DEFAULT_STOP_LOSS_PERCENT 
+};
